@@ -16,12 +16,14 @@ dependencies = [
     "torch>=2.10.0; sys_platform == 'darwin'",
     "torch==2.10.0+cu129; sys_platform == 'linux'",
     "numpy>=2.4.3",
+    "matplotlib-fontja>=1.1.0",
 ]
 
 [dependency-groups]
 # 開発用途のツールのみを定義し、OSの分岐には使用しない
 dev = [
     "ipykernel",
+    "matplotlib",
     "pytest",
     "ruff"
 ]
