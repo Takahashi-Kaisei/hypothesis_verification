@@ -1,0 +1,62 @@
+{
+	"name": "template environment",
+	"build": {
+		"dockerfile": "../Dockerfile",
+		"dockerignore": "../.dockerignore"
+	},
+	// --rmはコンテナ終了後に自動で削除するオプション。
+	"runArgs": [
+		"--gpus",
+		"all",
+		"--rm"
+	],
+	"workspaceFolder": "/usr/src/app",
+	"mounts": [
+		"source=uv-python-cache,target=/python,type=volume",
+		"source=uv-package-cache,target=/root/.cache/uv,type=volume"
+	],
+	"workspaceMount": "source=${localWorkspaceFolder},target=${containerWorkspaceFolder},type=bind,consistency=cached",
+	// devcontainersが提供する基本的なツール群をインストール。Dockerfileにaptを書きまくる必要がなくなる。
+	"features": {
+		"ghcr.io/devcontainers/features/common-utils:2.5.7": {
+			"installZsh": true,
+			"configureZshAsDefaultShell": true,
+			"upgradePackages": true,
+			"username": "vscode"
+		}
+	},
+	"containerEnv": {
+		"UV_PYTHON_INSTALL_DIR": "/python",
+		"UV_LINK_MODE": "copy" // ボリュームマウント上でのリンクエラーを防ぐ
+	},
+	// コンテナ作成後に自動で環境を同期
+	// "postCreateCommand": "uv sync --group dev",
+	"postCreateCommand": "uv sync",
+	// 欲しいものがある場合、拡張機能IDをこの中に追加する。
+	// "-ms-python.python"のように先頭に"-"をつけると、拡張機能をオプトアウトできる。
+	"customizations": {
+		"vscode": {
+			"settings": {
+				"python.defaultInterpreterPath": "/usr/src/app/.venv/bin/python",
+				"python.terminal.activateEnvInSelectedTerminal": true,
+				"editor.formatOnSave": true,
+				"editor.codeActionsOnSave": {
+					"source.fixAll.ruff": "always",
+					"source.organizeImports.ruff": "always"
+				}
+			},
+			"extensions": [
+				"ms-python.python",
+				"njpwerner.autodocstring",
+				"ms-toolsai.jupyter",
+				"ms-azuretools.vscode-docker",
+				"ms-python.vscode-pylance",
+				"ms-python.black-formatter",
+				"usernamehw.errorlens",
+				"ionutvmi.path-autocomplete",
+				"KevinRose.vsc-python-indent",
+				"shardulm94.trailing-spaces"
+			]
+		}
+	}
+}
